@@ -1,4 +1,6 @@
 #include "kioskcnc.h"
+#include <signal.h>
+#include <unistd.h>
 
 struct g g={0};
 
@@ -20,15 +22,89 @@ static int configure(int argc,char **argv) {
   return 0;
 }
 
+/* Cleanup.
+ */
+ 
+static void cleanup() {
+  savewatch_del(g.savewatch); g.savewatch=0;
+  poller_del(g.poller); g.poller=0;
+}
+
+/* Signals.
+ */
+ 
+static void rcvsig(int sigid) {
+  switch (sigid) {
+    case SIGINT: if (++(g.sigc)>=3) {
+        fprintf(stderr,"%s: Too many unprocessed signals.\n",g.exename);
+        exit(1);
+      } break;
+  }
+}
+
+/* Init.
+ */
+ 
+static int init() {
+  int err;
+  
+  signal(SIGINT,rcvsig);
+  
+  if (!(g.poller=poller_new())) return -1;
+  
+  if (!(g.savewatch=savewatch_new())) return -1;
+  
+  return 0;
+}
+
+/* Update.
+ * Blocks.
+ * Returns 0 to terminate normally, >0 to proceed, or <0 for fatal errors.
+ */
+ 
+static int update() {
+  int err;
+  if (g.sigc) return 0;
+  poller_flush(g.poller);
+  
+  if (g.savewatch) {
+    if ((err=savewatch_register_files(g.savewatch,g.poller))<0) return err;
+  }
+  
+  if ((err=poller_update(g.poller,500))<0) return err;
+  
+  if (g.savewatch) {
+    if ((err=savewatch_update(g.savewatch))<0) return err;
+  }
+  
+  if (g.sigc) return 0;
+  return 1;
+}
+
 /* Main.
  */
  
 int main(int argc,char **argv) {
   int err=configure(argc,argv);
   if (err<0) {
-    if (err!=-2) fprintf(stderr,"%s: Unspecified error starting up.\n",g.exename);
+    if (err!=-2) fprintf(stderr,"%s: Unspecified error reading configuration.\n",g.exename);
     return 1;
   }
-  //TODO
+  if ((err=init())<0) {
+    if (err!=-2) fprintf(stderr,"%s: Unspecified error starting services.\n",g.exename);
+    cleanup();
+    return 1;
+  }
+  fprintf(stderr,"%s: Running. SIGINT to quit.\n",g.exename);
+  for (;;) {
+    if ((err=update())<0) {
+      if (err!=-2) fprintf(stderr,"%s: Unspecified error updating.\n",g.exename);
+      cleanup();
+      return 1;
+    }
+    if (!err) break;
+  }
+  cleanup();
+  fprintf(stderr,"%s: Normal exit.\n",g.exename);
   return 0;
 }
