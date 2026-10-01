@@ -12,9 +12,10 @@ OFILES:=$(patsubst src/%.c,mid/%.o,$(CFILES))
 -include $(OFILES:.o=.d)
 mid/%.o:src/%.c;$(PRECMD) $(CC) -o$@ $<
 
-EXE:=out/kioskcnc
-all:$(EXE)
-$(EXE):$(OFILES);$(PRECMD) $(LD) -o$@ $^ $(LDPOST)
+EXE_CLIENT:=out/kioskcnc
+all:$(EXE_CLIENT)
+OFILES_CLIENT:=$(filter mid/client/%.o,$(OFILES))
+$(EXE_CLIENT):$(OFILES_CLIENT);$(PRECMD) $(LD) -o$@ $^ $(LDPOST)
 
-run:$(EXE);$(EXE)
+run:$(EXE_CLIENT);$(EXE_CLIENT)
 clean:;rm -rf mid out
