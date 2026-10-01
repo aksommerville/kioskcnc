@@ -17,5 +17,8 @@ all:$(EXE_CLIENT)
 OFILES_CLIENT:=$(filter mid/client/%.o,$(OFILES))
 $(EXE_CLIENT):$(OFILES_CLIENT);$(PRECMD) $(LD) -o$@ $^ $(LDPOST)
 
+# Server is Javascript and its client app is static, ready to go. Nothing to build.
+serve:;node src/server/main.js --port=8080 --htdocs=src/www
+
 run:$(EXE_CLIENT);$(EXE_CLIENT)
 clean:;rm -rf mid out
