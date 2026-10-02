@@ -41,7 +41,7 @@ const hiscores = {
 /* Check an incoming file and capture it if it's better than our current high score.
  */
 
-function possibleHighScore(name, body) {
+function possibleHighScore(host, name, body) {
   //...well. Actually I'm not sure it's worth recording these in the server.
   // Why not let the web app pull them all down and figure it out on its own?
   // I know that becomes grossly inefficient once the set is well populated, but it will be a new set every weekend. who cares.
@@ -53,10 +53,11 @@ function possibleHighScore(name, body) {
 function getAll() {
   const events = [];
   for (const base of fs.readdirSync("data")) {
-    const match = base.match(/^\d{14}-([a-zA-Z0-9]+)\.json$/);
+    const match = base.match(/^\d{14}-([a-zA-Z0-9_]+)-([a-zA-Z0-9]+)\.json$/);
     if (!match) continue;
     try {
-      const name = match[1];
+      const host = match[1];
+      const name = match[2];
 
       // Bellacopia records state changes pretty often. There are going to be hundreds of files.
       // And that's by design. I do want to be able to reconstruct user sessions from their various state files.
@@ -64,7 +65,7 @@ function getAll() {
       if (name === "bellacopia") continue;
       
       const body = JSON.parse(fs.readFileSync("data/" + base).toString("utf8"));
-      events.push({ name, body });
+      events.push({ host, name, body });
     } catch (e) {
       console.log(`${base}:ERROR: ${e.message}`);
     }
@@ -75,11 +76,11 @@ function getAll() {
 /* Receive an event.
  */
 
-function addFile(name, body) {
-  console.log(`scoreboard.addFile name=${JSON.stringify(name)} body=${JSON.stringify(body)}`);//TODO
+function addFile(host, name, body) {
   if (!name || !body) return;
   name = name.replace(/[^a-zA-Z0-9].*$/, "");
   if (!name) return;
+  if (!host) host = "unknown";
   const now = new Date();
   const prefix = now.getFullYear().toString() +
     (now.getMonth() + 1).toString().padStart(2, '0') +
@@ -87,9 +88,9 @@ function addFile(name, body) {
     now.getHours().toString().padStart(2, '0') +
     now.getMinutes().toString().padStart(2, '0') +
     now.getSeconds().toString().padStart(2, '0');
-  const path = `data/${prefix}-${name}.json`;
+  const path = `data/${prefix}-${host}-${name}.json`;
   fs.writeFileSync(path, JSON.stringify(body) + "\n");
-  possibleHighScore(name, body);
+  possibleHighScore(host, name, body);
 }
 
 /* Module definition.

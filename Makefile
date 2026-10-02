@@ -20,5 +20,5 @@ $(EXE_CLIENT):$(OFILES_CLIENT);$(PRECMD) $(LD) -o$@ $^ $(LDPOST)
 # Server is Javascript and its client app is static, ready to go. Nothing to build.
 serve:;node src/server/main.js --port=8080 --htdocs=src/www
 
-run:$(EXE_CLIENT);$(EXE_CLIENT)
+run:$(EXE_CLIENT);$(EXE_CLIENT) --host=$(shell uname -n) --remote=localhost:8080
 clean:;rm -rf mid out

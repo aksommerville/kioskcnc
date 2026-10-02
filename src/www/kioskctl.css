@@ -1,0 +1,21 @@
+html {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.RootUi .headline {
+  text-align: center;
+  font-size: 36pt;
+  font-weight: bold;
+}

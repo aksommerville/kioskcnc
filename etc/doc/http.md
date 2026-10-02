@@ -25,6 +25,7 @@ Response is JSON:
 ```
 {
   events: {
+    host: string
     file: string
     body: {...}
   }[]
@@ -40,6 +41,7 @@ Client delivers a new event.
 Request:
 ```
 {
+  host: string
   file: string
   body: {...}
 }

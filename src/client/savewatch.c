@@ -175,15 +175,9 @@ static int savewatch_sync(struct savewatch *savewatch,struct watch *watch) {
     fprintf(stderr,"%s: Read failed, can't sync via savewatch.\n",watch->path);
     return 0;
   }
-  
-  fprintf(stderr,"%s: File changed. Read %d bytes.\n",watch->path,serialc);
-  /*TODO ok now what?
-   * The easiest and safest thing is to write every saved file into a local log directory for later manual review.
-   * But it would be really cool to have a server running at the booth that collects high scores in real time and displays them on the big TV.
-   */
-  
+  int err=output_queue_event_loose(g.output,watch->path,serial,serialc);
   free(serial);
-  return 0;
+  return err;
 }
 
 /* Routine update.

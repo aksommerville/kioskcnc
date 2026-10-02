@@ -9,8 +9,8 @@ The saved games we monitor are hard-coded in `savewatch.c`.
 
 ## TODO
 
-- [ ] Log changed save files locally.
-- [ ] Send changed save files to a server.
+- [x] Log changed save files locally. ...NO. If we lose the server connection, we'll only lose intermediate states. It's fine.
+- [x] Send changed save files to a server.
 - [ ] Write that server.
 - - [x] Bare minimum POC: Node server. Receive save files from an external client and indicate their reception in a web app. No need to do anything with the data.
 - - [x] Receive files.

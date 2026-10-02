@@ -8,14 +8,18 @@
 #include <limits.h>
 #include "poller.h"
 #include "savewatch.h"
+#include "output.h"
 
 extern struct g {
 
   const char *exename;
+  const char *host;
+  const char *remote;
   
   volatile int sigc;
   struct poller *poller;
   struct savewatch *savewatch;
+  struct output *output;
 } g;
 
 double nowf();

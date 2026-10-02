@@ -133,13 +133,13 @@ function servePoll(req, rsp) {
 function serveEvent(req, rsp, body) {
   try {
     body = JSON.parse(body);
-    scoreboard.addFile(body.file, body.body);
+    scoreboard.addFile(body.host, body.file, body.body);
 
     if (pendingPolls.length) {
       for (let i=pendingPolls.length; i-->0; ) {
         pendingPolls[i].statusCode = 200;
         pendingPolls[i].setHeader("Content-Type", "application/json");
-        pendingPolls[i].end(JSON.stringify(body));
+        pendingPolls[i].end(JSON.stringify({ events: [body] }));
       }
       pendingPolls.splice(0, pendingPolls.length);
       unschedulePollFlush();
@@ -169,6 +169,7 @@ function serveGetall(req, rsp) {
  */
 
 module.exports = function serve(req, rsp, htdocs) {
+  //console.log(`serve: ${req.method} ${req.url}`);
   let body = "";
   req.on("data", (d) => body += d);
   req.on("end", () => {

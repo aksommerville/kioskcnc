@@ -1,61 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <title>Kiosk Status</title>
-<style>
-div {
-  background-color: #008000;
-}
-</style>
-<script>
-function fullscreen() {
-  const div = document.querySelector("div");
-  div.requestFullscreen();
-}
-
-function sendEvent() {
-  const body = JSON.stringify({
-    file: "bellacopia-linux.save",
-    body: {
-      save: "ABCDEFG",
-    },
-  });
-  fetch("/event", { method: "POST", body }).then(rsp => {
-    if (!rsp.ok) throw rsp;
-    console.log(`posted event`);
-  }).catch(e => {
-    console.error(e);
-  });
-}
-
-function poll() {
-  fetch("/poll", { method: "POST" }).then(rsp => {
-    if (!rsp.ok) throw rsp;
-    return rsp.text();
-  }).then(rsp => {
-    document.getElementById("eventLog").innerText += rsp + "\n";
-    window.setTimeout(() => poll(), 1000);
-  }).catch(e => {
-    console.error(e);
-  });
-}
-
-window.addEventListener("load", () => {
-  fetch("/getall", { method: "POST" }).then(rsp => {
-    if (!rsp.ok) throw rsp;
-    return rsp.text();
-  }).then(rsp => {
-    document.getElementById("eventLog").innerText += rsp + "\n";
-    poll();
-  }).catch(e => {
-    console.error(e);
-  });
-});
-
-</script>
+<link rel="stylesheet" type="text/css" href="./kioskctl.css" />
+<script type="module" src="./bootstrap.js"></script>
 </head><body>
-<div onclick="fullscreen()">
-<p>TODO</p>
-</div>
-<input type="button" value="sendEvent" onclick="sendEvent()" />
-<pre id="eventLog"></pre>
 </body></html>
