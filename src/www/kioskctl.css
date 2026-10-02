@@ -14,8 +14,50 @@ body {
   height: 100vh;
 }
 
+.RootUi {
+  height: 100%;
+}
 .RootUi .headline {
   text-align: center;
   font-size: 36pt;
   font-weight: bold;
+}
+
+.HiscoreUi {
+  display: flex;
+  flex-wrap: wrap;
+}
+.HiscoreUi .card {
+  width: calc(33vw - 40px);
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #404040;
+  border-radius: 10px;
+}
+.HiscoreUi .card .thumb {
+  max-width: 200px;
+  margin-right: 10px;
+}
+.HiscoreUi .card .text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.HiscoreUi .card .title {
+  font-size: 24pt;
+  color: #808080;
+}
+.HiscoreUi .card .scoreAligner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.HiscoreUi .card .score {
+  font-size: 56pt;
+  font-weight: bold;
+  text-align: center;
+  color: #ffff00;
 }

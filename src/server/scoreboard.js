@@ -5,6 +5,10 @@
 const fs = require("fs");
 
 /* Global scoreboard.
+ * On further reflection, I think we don't need this.
+ * We just agnostically collect files, and let the web app make the decisions.
+ * Of course in real life where there might be thousands or millions of inputs, we'd need to reduce them here.
+ * But this is just for a one-weekend expo.
  */
 
 const hiscores = {
@@ -52,7 +56,10 @@ function possibleHighScore(host, name, body) {
 
 function getAll() {
   const events = [];
-  for (const base of fs.readdirSync("data")) {
+  // It's no accident that basenames start with the big-endian date: We need to deliver them in chronological order.
+  const basev = fs.readdirSync("data");
+  basev.sort();
+  for (const base of basev) {
     const match = base.match(/^\d{14}-([a-zA-Z0-9_]+)-([a-zA-Z0-9]+)\.json$/);
     if (!match) continue;
     try {

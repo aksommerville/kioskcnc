@@ -15,6 +15,8 @@ export class RootUi {
     
     this.hiscoreUi = null;
     
+    this.element.addEventListener("click", () => this.element.requestFullscreen());
+    
     this.buildUi();
   }
   

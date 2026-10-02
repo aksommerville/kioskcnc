@@ -1,5 +1,10 @@
 /* KioskService.js
  * Responsible for communication with our server, and stashing data from it.
+ * Our responsibility ends with collecting the files.
+ *
+ * We do distinguish stateful from hiscore files because that's a storage concern, but otherwise we don't know about file content.
+ * "stateful": Proper saved games, such that the interesting things to report can only be derived by diffing. Bellacopia.
+ * "hiscore": Assume that we're going to pick just one of the file's states, the best score, and report that permanently. Most games.
  */
 
 /* Any file name listed here will be tracked per host.
@@ -139,14 +144,8 @@ export class KioskService {
         else added.push(sane);
         this.states[sane.host][sane.file] = sane.body;
       } else {
-        const p = this.scores.findIndex(s => s.file === sane.file);
-        if (p >= 0) {
-          this.scores[p] = sane;
-          updated.push(sane);
-        } else {
-          this.scores.push(sane);
-          added.push(sane);
-        }
+        this.scores.push(sane);
+        added.push(sane);
       }
     }
     if (notify) {
