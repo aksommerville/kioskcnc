@@ -15,6 +15,8 @@ extern struct g {
   const char *exename;
   const char *host;
   const char *remote;
+  int zap_saves;
+  int list_saves;
   
   volatile int sigc;
   struct poller *poller;
@@ -27,6 +29,9 @@ extern struct g {
  * Paths start after HOME, ie typically the first component is "proj".
  */
 extern const char *savefilev[];
+
+int zap_saves();
+int list_saves();
 
 double nowf();
 int file_read(void *dstpp,const char *path);

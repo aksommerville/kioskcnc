@@ -8,6 +8,19 @@ struct g g={0};
  * Always sets (g.exename), even on errors.
  */
  
+static void print_help() {
+  fprintf(stderr,"Usage: %s [OPTIONS]\n",g.exename);
+  fprintf(stderr,
+    "Endpoint daemon to monitor my saved games and send to a server when they change.\n"
+    "OPTIONS:\n"
+    "  --help                Print this message and exit.\n"
+    "  --zap-saves           Instead of normal operation, prompt and then delete all save files.\n"
+    "  --list-saves          Instead of normal operation, show the set of files I'm going to monitor.\n"
+    "  --host=MY_HOST_NAME   Set host name. Normally `uname -n`. Can also use env HOST.\n"
+    "  --remote=HOST:PORT    [required] Server to send saved games to.\n"
+  );
+}
+ 
 static int configure(int argc,char **argv) {
   if ((argc>=1)&&argv&&argv[0]&&argv[0][0]) g.exename=argv[0];
   else g.exename="kioskcnc";
@@ -24,6 +37,18 @@ static int configure(int argc,char **argv) {
     if (!memcmp(arg,"--remote=",9)) {
       g.remote=arg+9;
       continue;
+    }
+    if (!strcmp(arg,"--zap-saves")) {
+      g.zap_saves=1;
+      return 0;
+    }
+    if (!strcmp(arg,"--list-saves")) {
+      g.list_saves=1;
+      return 0;
+    }
+    if (!strcmp(arg,"--help")) {
+      print_help();
+      return -2;
     }
     
     fprintf(stderr,"%s: Unexpected argument '%s'\n",g.exename,arg);
@@ -114,6 +139,26 @@ int main(int argc,char **argv) {
     if (err!=-2) fprintf(stderr,"%s: Unspecified error reading configuration.\n",g.exename);
     return 1;
   }
+  
+  /* Alternate modes.
+   */
+  if (g.zap_saves) {
+    if ((err=zap_saves())<0) {
+      if (err!=-2) fprintf(stderr,"%s: Unspecified error zapping saves.\n",g.exename);
+      return 1;
+    }
+    return 0;
+  }
+  if (g.list_saves) {
+    if ((err=list_saves())<0) {
+      if (err!=-2) fprintf(stderr,"%s: Unspecified error listing saves.\n",g.exename);
+      return 1;
+    }
+    return 0;
+  }
+  
+  /* Normal daemon mode.
+   */
   if ((err=init())<0) {
     if (err!=-2) fprintf(stderr,"%s: Unspecified error starting services.\n",g.exename);
     cleanup();

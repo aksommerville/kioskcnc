@@ -20,7 +20,7 @@ The saved games we monitor are hard-coded in `savewatch.c`.
 - - [ ] Fullscreen notification when a record is broken.
 - - [ ] Similar notification for selected Bellacopia events.
 - - [ ] Generate saved-game links for Bellacopia, and let me copy them from my phone to email to users.
-- [ ] Helper in the client to delete all the saved games.
+- [x] Helper in the client to delete all the saved games.
 
 ## Client/Server
 
