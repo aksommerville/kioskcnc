@@ -4,6 +4,7 @@
  */
  
 import { KioskService } from "./KioskService.js";
+import { BellacopiaState } from "./BellacopiaState.js";
 
 export class ScoreboardService {
   static getDependencies() {
@@ -30,10 +31,10 @@ export class ScoreboardService {
    *   { action: "hiscore", file: string, score: string } # Formatted for display, and confirmed to be a new record. (file) might be new.
    *   { action: "pity", file: string, score: string } # Fired instead of "hiscore", when we got a new one but it's not a record.
    *   { action: "item", file: "bellacopia", name: string }
-   *   { action: "rootdevil", file: "bellacopia", id: number }
-   *   { action: "treestory", file: "bellacopia", treeid: number, story: string } # We provide a story name for display.
-   *   { action: "zoo", file: "bellacopia", zoo: string, monster: string }
-   * TODO We can add all kinds of Bellacopia events. Think on what's desired.
+   *   { action: "allrootdevils", file: "bellacopia" }
+   *   { action: "rootdevil", file: "bellacopia", name: string }
+   *   { action: "election", file: "bellacopia", state: 1|2 (started,won) }
+   *   { action: "fish", file: "bellacopia", color: "green"|"blue"|"red" }
    */
   listen(cb) {
     const id = this.nextListenerId++;
@@ -55,7 +56,7 @@ export class ScoreboardService {
           switch (event.score.file) {
             case "all52": this.receiveScore(event.score.file, event.score.body.hiscore, "nopuncttime"); break;
             case "apothecary": this.receiveScore(event.score.file, event.score.body.hiscore, "ms"); break;
-            case "bellacopia": this.receiveState(event.score.file, event.score.host, event.score.body.save); break;
+            case "bellacopia": this.receiveState(event.score.file, event.score.host, event.score.body.save, event.score.old?.save); break;
             case "cherteau": this.receiveScore(event.score.file, event.score.body.hiscore); break;
             case "hummfu": this.receiveScore(event.score.file, event.score.body.hiscore, "decimal"); break;
             case "iggle": this.receiveScore(event.score.file, event.score.body.highscore, "ms"); break;
@@ -256,9 +257,83 @@ export class ScoreboardService {
   /* State tracking for known games. Probably just Bellacopia.
    ****************************************************************************************/
   
-  receiveState(file, host, state) {
-    console.log(`ScoreboardService.receiveState ${file} @ ${host}`, state);
-    //TODO
+  receiveState(file, host, state, prev) {
+    //console.log(`ScoreboardService.receiveState ${file} @ ${host}`, state, prev);
+    if (!state || !prev) return;
+    switch (file) {
+      case "bellacopia": this.onBellacopiaChanged(host, state, prev); break;
+    }
+  }
+  
+  onBellacopiaChanged(host, state, prev) {
+    const ns = new BellacopiaState(state);
+    const ps = new BellacopiaState(prev);
+    console.log(`bellacopia@${host}: ${state} <= ${prev}`, { ns, ps });
+    if (ns.getFullTime() < ps.getFullTime()) return; // Clock turned backward, must be a new session. Cool, nothing to report.
+    
+    // Report events most-to-least significant since the receiver might show the first thing and then ignore the others.
+    
+    /* Strangled a Root Devil?
+     */
+    const nrd = ns.getRootDevils();
+    const prd = ps.getRootDevils();
+    if ((nrd.length >= 7) && (prd.length < 7)) {
+      this.broadcast({ action: "allrootdevils", file: "bellacopia" });
+    }
+    for (const name of nrd) {
+      if (prd.indexOf(name) < 0) {
+        this.broadcast({ action: "rootdevil", file: "bellacopia", name });
+      }
+    }
+    
+    /* Started or finished the election?
+     */
+    if (ns.fldv[52] && !ps.fldv[52]) { // election_start
+      this.broadcast({ action: "election", file: "bellacopia", state: 1 });
+    } else if (ns.fldv[15] && !ps.fldv[15]) { // mayor
+      this.broadcast({ action: "election", file: "bellacopia", state: 2 });
+    } else if (ns.fldv[52]) {
+      const nc = ns.countEndorsements();
+      const pc = ps.countEndorsements();
+      if (nc > pc) {
+        this.broadcast({ action: "election", file: "bellacopia", state: 3 });
+      }
+    }
+    
+    /* Has she got any new inventory worth reporting?
+     */
+    const ninv = ns.getInventory();
+    const pinv = ps.getInventory();
+    for (const item of ninv) {
+      if (pinv.indexOf(item) < 0) {
+        this.broadcast({ action: "item", file: "bellacopia", name: item });
+      }
+    }
+    
+    /* Caught a new fish?
+     * We only fire these if gold remained constant, don't do it for store-bought fish.
+     */
+    if (ns.fld16v[3] === ns.fld16v[3]) { // no gain or loss of gold...
+      if (ns.fld16v[5] > (ps.fld16v[5] || 0)) {
+        this.broadcast({ action: "fish", file: "bellacopia", color: "green" });
+      }
+      if (ns.fld16v[6] > (ps.fld16v[6] || 0)) {
+        this.broadcast({ action: "fish", file: "bellacopia", color: "blue" });
+      }
+      if (ns.fld16v[7] > (ps.fld16v[7] || 0)) {
+        this.broadcast({ action: "fish", file: "bellacopia", color: "red" });
+      }
+    }
+    
+    /* More possibilities: TODO
+     *  - tree stories
+     *  - zoos
+     *  - rescued the princess
+     *  - defeated the ice dragon
+     *  - escaped the labyrinth
+     *  - buried treasure
+     *  - win a broom race
+     */
   }
 }
 

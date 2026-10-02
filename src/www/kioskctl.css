@@ -85,3 +85,143 @@ body {
     background-color: initial;
   }
 }
+
+.Interruption {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.Interruption.darkish {
+  background-color: #008c;
+}
+
+.caughtfish {
+  position: fixed;
+  right: 0;
+  top: 125vh;
+  animation: 5s 1 aCaughtfish;
+}
+@keyframes aCaughtfish {
+  0% {
+    left: 80vw;
+    top: 125vh;
+    transform: rotate(0.250turn);
+  }
+  50% {
+    left: 40vw;
+    top: 0;
+    transform: rotate(0);
+  }
+  100% {
+    left: 10vw;
+    top: 125vh;
+    transform: rotate(-0.250turn);
+  }
+}
+
+.voteDotBlotter {
+  width: 100%;
+  height: 100%;
+  background-color: #104020;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+.voteDotBlotter .bigText {
+  font-weight: bold;
+  font-size: 72pt;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.voteDotBlotter .speech {
+  font-style: italic;
+  font-size: 24pt;
+  position: absolute;
+  right: 20vw;
+  bottom: 20vh;
+}
+.voteDotBlotter img.voteforme {
+  position: absolute;
+  left: 0;
+  animation: 4s 1 aVoteforme;
+}
+@keyframes aVoteforme {
+  from {
+    top: 100vh;
+  }
+  to {
+    top: 10vh;
+  }
+}
+.newspaper {
+  animation: 5s 1 aNewspaper;
+}
+@keyframes aNewspaper {
+  0% {
+    transform: scale(0.1) rotate(-6turn);
+    opacity: 0;
+  }
+  20% {
+    transform: scale(1) rotate(0);
+    opacity: 100%;
+  }
+  80% {
+    transform: scale(1) rotate(0);
+    opacity: 100%;
+  }
+  100% {
+    transform: scale(0.1) rotate(6turn);
+    opacity: 0;
+  }
+}
+.newsBanner {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  bottom: 10vh;
+  height: 140px;
+  border-top: 10px solid #fff;
+  border-bottom: 10px solid #fff;
+  background-color: #800000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+}
+.newsBanner .newsBannerText {
+  font-size: 96pt;
+  text-wrap: nowrap;
+  animation: 10s 1 aNewsBannerText;
+}
+@keyframes aNewsBannerText {
+  0% {
+    transform: translate(1920px);
+  }
+  100% {
+    transform: translate(-100%);
+  }
+}
+.itemText {
+  font-size: 36pt;
+  text-shadow: 0 1px 2px #000;
+}
+.deadRootDevil {
+  animation: 7s 1 aDeadRootDevil;
+}
+@keyframes aDeadRootDevil {
+  0% {
+    transform: translate(0, 100vh);
+  }
+  50% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, 100vh);
+  }
+}

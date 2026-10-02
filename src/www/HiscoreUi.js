@@ -4,6 +4,7 @@
  
 import { Dom } from "./Dom.js";
 import { ScoreboardService } from "./ScoreboardService.js";
+import { Interruption } from "./Interruption.js";
 
 export class HiscoreUi {
   static getDependencies() {
@@ -17,6 +18,8 @@ export class HiscoreUi {
     // We're going to process maybe hundreds of events the moment we connect the hose.
     // For the first few seconds of life, treat them only as state, don't highlight anything or trigger eventy stuff.
     this.disableNotifications = Date.now() + 5000;
+    
+    this.interruption = null;
     
     this.buildUi();
     
@@ -56,6 +59,29 @@ export class HiscoreUi {
     return card;
   }
   
+  interrupt(pgm, arg) {
+    if (this.interruption) return;
+    if (this.disableNotifications) {
+      if (Date.now() < this.disableNotifications) return;
+      this.disableNotifications = null;
+    }
+    this.interruption = this.dom.spawnController(this.element, Interruption);
+    this.interruption.setup(pgm, arg, () => {
+      this.interruption = null;
+    });
+  }
+  
+  shouldInterruptForItem(name) {
+    return ([
+      "Broom", "Divining Rod", "Match", "Wand", "Fishpole",
+      "Bug Spray", "Potion", "Hookshot", "Candy", "Magnifier",
+      "Vanishing Cream", "Compass", "Bell", "Telescope",
+      "Shovel", "Pepper", "Bomb", "Stopwatch", "Portable Bus Stop",
+      "Snowglobe", "Tape Measure", "Phonograph", "Crystal Ball",
+      "Power Glove", "Marionette",
+    ].indexOf(name) >= 0);
+  }
+  
   /* Scoreboard events.
    **************************************************************************/
    
@@ -81,13 +107,12 @@ export class HiscoreUi {
     switch (event.action) {
       case "hiscore": return this.setHiscore(event.file, event.score);
       case "pity": return this.showPity(event.file, event.score);
+      //case "allrootdevils": return this.interrupt("allrootdevils");
+      case "rootdevil": return this.interrupt("rootdevil", event.name);
+      case "item": if (this.shouldInterruptForItem(event.name)) return this.interrupt("item", event.name);
+      case "election": return this.interrupt("election", event.state);
+      case "fish": return this.interrupt("fish", event.color);
       default: console.log(`HiscoreUi.onScoreboardEvent`, event); //TODO
-      /*
-      case "item":
-      case "rootdevil":
-      case "treestory":
-      case "zoo":
-      /**/
     }
   }
 }
