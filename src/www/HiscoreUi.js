@@ -42,7 +42,10 @@ export class HiscoreUi {
     if (card) {
       card.querySelector(".score").innerText = score;
     } else {
-      card = this.dom.spawn(this.element, "DIV", ["card"], { "data-file": file });
+      card = this.dom.spawn(this.element, "DIV", ["card"], {
+        "data-file": file,
+        "on-animationend": e => { card.classList.remove("blinkPity", "blinkHiscore"); },
+      });
       this.dom.spawn(card, "IMG", ["thumb"], { src: `./thumb/${file}.png` });
       const text = this.dom.spawn(card, "DIV", ["text"]);
       this.dom.spawn(text, "DIV", ["title"], ScoreboardService.FILE_DISPLAY_NAMES[file] || file);
@@ -62,15 +65,16 @@ export class HiscoreUi {
       if (Date.now() < this.disableNotifications) return;
       this.disableNotifications = null;
     }
-    //TODO beep beep!
+    card.classList.add("blinkHiscore");
   }
   
   showPity(file, score) {
+    // This exists and it should come up sometimes but usually not: If your score was less than your local record, the save file won't be updated so we never see it here.
     if (this.disableNotifications) {
       if (Date.now() < this.disableNotifications) return;
       this.disableNotifications = null;
     }
-    //TODO beep beep!
+    card.classList.add("blinkPity");
   }
   
   onScoreboardEvent(event) {

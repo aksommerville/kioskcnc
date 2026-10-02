@@ -17,7 +17,7 @@ The saved games we monitor are hard-coded in `savewatch.c`.
 - - [x] Log files here too.
 - [ ] Web app.
 - - [x] Big friendly scoreboard, the default view.
-- - [ ] Fullscreen notification when a record is broken.
+- - [x] Fullscreen notification when a record is broken. ...gentler and inline but yeah
 - - [ ] Similar notification for selected Bellacopia events.
 - - [ ] Generate saved-game links for Bellacopia, and let me copy them from my phone to email to users.
 - [x] Helper in the client to delete all the saved games.

@@ -61,3 +61,27 @@ body {
   text-align: center;
   color: #ffff00;
 }
+
+.blinkPity {
+  animation: 2s 1 aBlinkPity;
+}
+@keyframes aBlinkPity {
+  from {
+    background-color: #ff0000;
+  }
+  to {
+    background-color: initial;
+  }
+}
+
+.blinkHiscore {
+  animation: 2s 1 aBlinkHiscore;
+}
+@keyframes aBlinkHiscore {
+  from {
+    background-color: #00ff00;
+  }
+  to {
+    background-color: initial;
+  }
+}
