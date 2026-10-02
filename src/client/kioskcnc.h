@@ -22,6 +22,12 @@ extern struct g {
   struct output *output;
 } g;
 
+/* savefiles.c
+ * Contains this one list of partial paths, terminated by a null.
+ * Paths start after HOME, ie typically the first component is "proj".
+ */
+extern const char *savefilev[];
+
 double nowf();
 int file_read(void *dstpp,const char *path);
 

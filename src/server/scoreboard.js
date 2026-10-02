@@ -57,15 +57,15 @@ function getAll() {
     if (!match) continue;
     try {
       const host = match[1];
-      const name = match[2];
+      const file = match[2];
 
       // Bellacopia records state changes pretty often. There are going to be hundreds of files.
       // And that's by design. I do want to be able to reconstruct user sessions from their various state files.
       // But it's ridiculous to send these all to the web app, when we're not even capturing a "high score" for it.
-      if (name === "bellacopia") continue;
+      if (file === "bellacopia") continue;
       
       const body = JSON.parse(fs.readFileSync("data/" + base).toString("utf8"));
-      events.push({ host, name, body });
+      events.push({ host, file, body });
     } catch (e) {
       console.log(`${base}:ERROR: ${e.message}`);
     }

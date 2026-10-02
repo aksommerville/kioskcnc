@@ -117,7 +117,7 @@ static int output_cb_writeable(int fd,void *userdata) {
     output->fd=-1;
     return 0;
   }
-  fprintf(stderr,"OUT TO THE REMOTE:\n%.*s\n-----\n",err,output->wbuf+output->wbufp);
+  //fprintf(stderr,"OUT TO THE REMOTE:\n%.*s\n-----\n",err,output->wbuf+output->wbufp);
   if ((output->wbufc-=err)<=0) {
     output->wbufp=output->wbufc=0;
   } else {

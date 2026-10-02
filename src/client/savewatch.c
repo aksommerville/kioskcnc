@@ -83,7 +83,11 @@ static void savewatch_add(struct savewatch *savewatch,const char *rpath) {
   /* Register with inotify.
    */
   path[sepp]=0;
-  if ((watch->wd=inotify_add_watch(savewatch->infd,path,IN_MODIFY|IN_ATTRIB|IN_MOVED_TO|IN_CREATE))<0) { savewatch->err=-1; return; }
+  if ((watch->wd=inotify_add_watch(savewatch->infd,path,IN_MODIFY|IN_ATTRIB|IN_MOVED_TO|IN_CREATE))<0) {
+    fprintf(stderr,"%s: inotify_add_watch failed. Does the directory exist?\n",path);
+    savewatch->err=-1;
+    return;
+  }
 }
 
 /* New.
@@ -100,12 +104,8 @@ struct savewatch *savewatch_new() {
     return 0;
   }
   
-  /* ***** Here is the list of files to watch. *****
-   * Arguably should come from the command line or a config file or something. Meh.
-   */
-  savewatch_add(savewatch,"proj/bellacopia/out/bellacopia-linux.save");
-  savewatch_add(savewatch,"proj/kleptomania/out/kleptomania-linux.save");
-  savewatch_add(savewatch,"proj/younap/out/younap-linux.save");
+  const char **subpathp=savefilev;
+  for (;*subpathp;subpathp++) savewatch_add(savewatch,*subpathp);
   
   if (savewatch->err<0) {
     savewatch_del(savewatch);

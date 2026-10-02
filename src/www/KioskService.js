@@ -53,6 +53,15 @@ export class KioskService {
     for (const { cb } of this.listeners) cb(event);
   }
   
+  iterate(cb) {
+    for (const score of this.scores) cb(score);
+    for (const host of Object.keys(this.states)) {
+      for (const file of Object.keys(this.states[host])) {
+        cb({ host, file, score: this.states[host][file] });
+      }
+    }
+  }
+  
   refresh() {
     if (this.pollTimeout) {
       this.window.clearTimeout(this.pollTimeout);
@@ -66,7 +75,7 @@ export class KioskService {
       return rsp.json();
     }).then(rsp => {
       if (this.cancelSeq !== cancelSeq) throw new Error("Cancelled");
-      console.log(`got full response`, rsp);
+      //console.log(`got full response`, rsp);
       this.replaceContent(rsp);
       this.poll();
     }).catch(e => {
@@ -83,7 +92,7 @@ export class KioskService {
         return rsp.json();
       }).then(rsp => {
         if (this.cancelSeq !== cancelSeq) throw new Error("Cancelled");
-        console.log(`got poll response`, rsp);
+        //console.log(`got poll response`, rsp);
         this.pollTimeout = null;
         this.appendContent(rsp, true);
         this.poll();

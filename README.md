@@ -11,12 +11,16 @@ The saved games we monitor are hard-coded in `savewatch.c`.
 
 - [x] Log changed save files locally. ...NO. If we lose the server connection, we'll only lose intermediate states. It's fine.
 - [x] Send changed save files to a server.
-- [ ] Write that server.
+- [x] Write that server.
 - - [x] Bare minimum POC: Node server. Receive save files from an external client and indicate their reception in a web app. No need to do anything with the data.
 - - [x] Receive files.
 - - [x] Log files here too.
-- - [ ] Display news and stats in a big friendly presentation suitable for my big TV.
+- [ ] Web app.
+- - [ ] Big friendly scoreboard, the default view.
+- - [ ] Fullscreen notification when a record is broken.
+- - [ ] Similar notification for selected Bellacopia events.
 - - [ ] Generate saved-game links for Bellacopia, and let me copy them from my phone to email to users.
+- [ ] Helper in the client to delete all the saved games.
 
 ## Client/Server
 
