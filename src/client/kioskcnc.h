@@ -9,6 +9,7 @@
 #include "poller.h"
 #include "savewatch.h"
 #include "output.h"
+#include "foutput.h"
 
 extern struct g {
 
@@ -22,6 +23,7 @@ extern struct g {
   struct poller *poller;
   struct savewatch *savewatch;
   struct output *output;
+  struct foutput *foutput;
 } g;
 
 /* savefiles.c
@@ -35,5 +37,6 @@ int list_saves();
 
 double nowf();
 int file_read(void *dstpp,const char *path);
+int file_write(const char *path,const void *src,int srcc);
 
 #endif

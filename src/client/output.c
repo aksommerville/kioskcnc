@@ -233,7 +233,7 @@ int output_queue_event(struct output *output,const char *body,int bodyc) {
 /* Decode Egg save file and reencode as JSON ready to send to POST /event.
  */
  
-static int output_encode_event(struct sr_encoder *dst,const char *path,const uint8_t *src,int srcc) {
+int output_encode_event(struct sr_encoder *dst,const char *path,const uint8_t *src,int srcc) {
   int outerctx=sr_encode_json_object_start(dst,0,0);
   sr_encode_json_string(dst,"host",4,g.host,-1);
   
@@ -275,7 +275,9 @@ static int output_encode_event(struct sr_encoder *dst,const char *path,const uin
   }
   sr_encode_json_end(dst,bodyctx);
   
-  return sr_encode_json_end(dst,outerctx);
+  if (sr_encode_json_end(dst,outerctx)<0) return -1;
+  sr_encode_u8(dst,0x0a); // Trailing newline just to be polite.
+  return 0;
 }
 
 /* Encode and queue event.

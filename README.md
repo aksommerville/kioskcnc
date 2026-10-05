@@ -11,6 +11,14 @@ In just one evening of testing, I generated over 1 MB of log files. Bellacopia i
 This is fine for GDEX. I mean, if there's 100 MB of logs, I can work with it.
 But if we do something like this more permanent, might need to get smarter about packing data.
 
+Update 2026-10-05
+Alas everything has gone to shit.
+I got 3 USB Ethernet adapters (Realtek RTL8153 inside), and can't get them working with the contops.
+Same deal with their radios even.
+So I think we're not going to do the big scoreboard.
+Instead, modify the kioskcnc client to dump files in `data`, and at least I can analyze them after.
+Keep the existing `output` unit in place. Add an alternative to it, create one or the other at startup, and have `savewatch` send to the one that exists.
+
 ## TODO
 
 - [x] Log changed save files locally. ...NO. If we lose the server connection, we'll only lose intermediate states. It's fine.

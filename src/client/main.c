@@ -17,7 +17,7 @@ static void print_help() {
     "  --zap-saves           Instead of normal operation, prompt and then delete all save files.\n"
     "  --list-saves          Instead of normal operation, show the set of files I'm going to monitor.\n"
     "  --host=MY_HOST_NAME   Set host name. Normally `uname -n`. Can also use env HOST.\n"
-    "  --remote=HOST:PORT    [required] Server to send saved games to.\n"
+    "  --remote=HOST:PORT    Server to send saved games to. If unset, save them locally under data/.\n"
   );
 }
  
@@ -55,10 +55,6 @@ static int configure(int argc,char **argv) {
     return -2;
   }
   if (!g.host||!g.host[0]) g.host="unknown";
-  if (!g.remote||!g.remote[0]) {
-    fprintf(stderr,"%s:ERROR: Please specify remote host as '--remote=HOST:PORT'\n",g.exename);
-    return -2;
-  }
   return 0;
 }
 
@@ -69,6 +65,7 @@ static void cleanup() {
   savewatch_del(g.savewatch); g.savewatch=0;
   poller_del(g.poller); g.poller=0;
   output_del(g.output); g.output=0;
+  foutput_del(g.foutput); g.foutput=0;
 }
 
 /* Signals.
@@ -95,7 +92,11 @@ static int init() {
   
   if (!(g.savewatch=savewatch_new())) return -1;
   
-  if (!(g.output=output_new(g.remote))) return -1;
+  if (g.remote&&g.remote[0]) {
+    if (!(g.output=output_new(g.remote))) return -1;
+  } else {
+    if (!(g.foutput=foutput_new())) return -1;
+  }
   
   return 0;
 }
@@ -132,8 +133,9 @@ static int update() {
 
 /* Main.
  */
- 
+
 int main(int argc,char **argv) {
+
   int err=configure(argc,argv);
   if (err<0) {
     if (err!=-2) fprintf(stderr,"%s: Unspecified error reading configuration.\n",g.exename);

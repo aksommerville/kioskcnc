@@ -175,7 +175,15 @@ static int savewatch_sync(struct savewatch *savewatch,struct watch *watch) {
     fprintf(stderr,"%s: Read failed, can't sync via savewatch.\n",watch->path);
     return 0;
   }
-  int err=output_queue_event_loose(g.output,watch->path,serial,serialc);
+  int err;
+  if (g.output) {
+    err=output_queue_event_loose(g.output,watch->path,serial,serialc);
+  } else if (g.foutput) {
+    err=foutput_queue_event_loose(g.foutput,watch->path,serial,serialc);
+  } else {
+    fprintf(stderr,"%s: No output mode was configured.\n",__func__);
+    err=-2;
+  }
   free(serial);
   return err;
 }

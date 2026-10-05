@@ -7,6 +7,7 @@
 
 struct output;
 struct poller;
+struct sr_encoder;
 
 void output_del(struct output *output);
 struct output *output_new(const char *host_and_port);
@@ -24,5 +25,11 @@ int output_queue_event(struct output *output,const char *body,int bodyc);
  * (src) is a binary Egg saved game. We'll turn it into a JSON object.
  */
 int output_queue_event_loose(struct output *output,const char *path,const void *src,int srcc);
+
+/* Take a path, a binary Egg save file, and some globals.
+ * Emits JSON text suitable for long-term capture.
+ * Time is not encoded. We assume whoever writes the final file will sample it at that time and encode in the path.
+ */
+int output_encode_event(struct sr_encoder *dst,const char *path,const uint8_t *src,int srcc);
 
 #endif
