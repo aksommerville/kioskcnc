@@ -5,7 +5,11 @@
 Daemon for ad-hoc operations on my convention kiosks.
 Watch for changes to known saved-game files, notify our server.
 
-The saved games we monitor are hard-coded in `savewatch.c`.
+The saved games we monitor are hard-coded in `savefiles.c`.
+
+In just one evening of testing, I generated over 1 MB of log files. Bellacopia in particular, makes a file every time anything changes.
+This is fine for GDEX. I mean, if there's 100 MB of logs, I can work with it.
+But if we do something like this more permanent, might need to get smarter about packing data.
 
 ## TODO
 
