@@ -203,6 +203,7 @@ static int output_queue_decsint(struct output *output,int v) {
   }
   int digitc=1,limit=10;
   while (v>=limit) { digitc++; if (limit>INT_MAX/10) break; limit*=10; }
+  if (tmpc+digitc>sizeof(tmp)) return -1;
   int i=digitc;
   for (;i-->0;v/=10) tmp[tmpc+i]='0'+v%10;
   tmpc+=digitc;
