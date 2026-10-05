@@ -3,7 +3,7 @@ all:
 .SECONDARY:
 PRECMD=echo "  $@" ; mkdir -p $(@D) ;
 
-CC:=gcc -c -MMD -O3 -Isrc -Werror -Wimplicit
+CC:=gcc -c -MMD -O3 -Isrc -Werror -Wimplicit -Wno-stringop-overflow
 LD:=gcc
 LDPOST:=
 
