@@ -33,6 +33,8 @@ Keep the existing `output` unit in place. Add an alternative to it, create one o
 - - [x] Similar notification for selected Bellacopia events.
 - - [ ] Generate saved-game links for Bellacopia, and let me copy them from my phone to email to users.
 - [x] Helper in the client to delete all the saved games.
+- [ ] I generated 1.9 MB of Bellacopia logs in 51 minutes of play. Maybe we do need to delay more.
+- - ...well actually. 2 MB/hour would cost 44 MB over the course of GDEX. And certainly not going to max out any hard drives. It's fine.
 
 ## Client/Server
 
