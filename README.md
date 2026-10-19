@@ -21,20 +21,9 @@ Keep the existing `output` unit in place. Add an alternative to it, create one o
 
 ## TODO
 
-- [x] Log changed save files locally. ...NO. If we lose the server connection, we'll only lose intermediate states. It's fine.
-- [x] Send changed save files to a server.
-- [x] Write that server.
-- - [x] Bare minimum POC: Node server. Receive save files from an external client and indicate their reception in a web app. No need to do anything with the data.
-- - [x] Receive files.
-- - [x] Log files here too.
-- [ ] Web app.
-- - [x] Big friendly scoreboard, the default view.
-- - [x] Fullscreen notification when a record is broken. ...gentler and inline but yeah
-- - [x] Similar notification for selected Bellacopia events.
-- - [ ] Generate saved-game links for Bellacopia, and let me copy them from my phone to email to users.
-- [x] Helper in the client to delete all the saved games.
-- [ ] I generated 1.9 MB of Bellacopia logs in 51 minutes of play. Maybe we do need to delay more.
-- - ...well actually. 2 MB/hour would cost 44 MB over the course of GDEX. And certainly not going to max out any hard drives. It's fine.
+- [ ] Use this project for high-level kiosk configuration. eg orchestration clone and build.
+- - Eventually ra4 should relieve us of some of that. But if there's opportunity for lightweight conveniences in the near term...
+- - Making an Egg change on a kiosk is kind of painful because you have to rebuild all the games. A script in here could ease that.
 
 ## Client/Server
 
